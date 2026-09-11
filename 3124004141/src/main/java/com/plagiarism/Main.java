@@ -1,6 +1,7 @@
 package com.plagiarism;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -39,9 +40,9 @@ public class Main {
             // 5. 计算余弦相似度
             double similarity = SimilarityCalculator.cosineSimilarity(origWords, copyWords);
 
-            // 6. 保留两位小数写入输出文件
+            // 6. 保留两位小数写入输出文件（JDK8兼容写法）
             String result = String.format("%.2f", similarity);
-            Files.writeString(Paths.get(outputPath), result, StandardCharsets.UTF_8);
+            Files.write(Paths.get(outputPath), result.getBytes(StandardCharsets.UTF_8));
 
         } catch (IOException e) {
             System.err.println("文件操作错误: " + e.getMessage());
@@ -60,10 +61,12 @@ public class Main {
      */
     private static String readFile(String filePath) throws IOException {
         try {
-            return Files.readString(Paths.get(filePath), StandardCharsets.UTF_8);
+            byte[] bytes = Files.readAllBytes(Paths.get(filePath));
+            return new String(bytes, StandardCharsets.UTF_8);
         } catch (IOException e) {
             // UTF-8 解码失败，尝试 GBK 编码
-            return Files.readString(Paths.get(filePath), java.nio.charset.Charset.forName("GBK"));
+            byte[] bytes = Files.readAllBytes(Paths.get(filePath));
+            return new String(bytes, Charset.forName("GBK"));
         }
     }
 }
