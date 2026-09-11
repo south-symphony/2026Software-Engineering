@@ -44,10 +44,6 @@ public class Main {
             String result = String.format("%.2f", similarity);
             Files.write(Paths.get(outputPath), result.getBytes(StandardCharsets.UTF_8));
 
-            // 新增：暂停程序，等待按回车再退出，方便JProfiler采集数据
-            System.out.println("程序运行完成，按回车键退出...");
-            System.in.read();
-
         } catch (IOException e) {
             System.err.println("文件操作错误: " + e.getMessage());
             System.exit(1);
