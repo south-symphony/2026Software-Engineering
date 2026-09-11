@@ -3,6 +3,7 @@ package com.plagiarism;
 import com.huaban.analysis.jieba.JiebaSegmenter;
 import com.huaban.analysis.jieba.SegToken;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,7 +23,7 @@ public class WordSegmenter {
      */
     public static List<String> segment(String text) {
         if (text == null || text.isEmpty()) {
-            return List.of();
+            return Collections.emptyList(); // JDK8兼容写法
         }
         List<SegToken> tokens = SEGMENTER.process(text, JiebaSegmenter.SegMode.INDEX);
         return tokens.stream()
