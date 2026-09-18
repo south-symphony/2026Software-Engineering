@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WordSegmenter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">plagiarism-checker</a> &gt; <a href="index.source.html" class="el_package">com.plagiarism</a> &gt; <span class="el_source">WordSegmenter.java</span></div><h1>WordSegmenter.java</h1><pre class="source lang-java linenums">package com.plagiarism;
+
+import com.huaban.analysis.jieba.JiebaSegmenter;
+import com.huaban.analysis.jieba.SegToken;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * 中文分词工具类
+ * 封装 Jieba 分词器，提供统一分词接口
+ */
+<span class="nc" id="L14">public class WordSegmenter {</span>
+
+    // 单例分词器，避免重复初始化
+<span class="fc" id="L17">    private static final JiebaSegmenter SEGMENTER = new JiebaSegmenter();</span>
+
+    /**
+     * 对文本进行精确模式分词
+     * @param text 输入文本
+     * @return 分词结果列表
+     */
+    public static List&lt;String&gt; segment(String text) {
+<span class="fc bfc" id="L25" title="All 4 branches covered.">        if (text == null || text.isEmpty()) {</span>
+<span class="fc" id="L26">            return Collections.emptyList(); // JDK8兼容写法</span>
+        }
+<span class="fc" id="L28">        List&lt;SegToken&gt; tokens = SEGMENTER.process(text, JiebaSegmenter.SegMode.INDEX);</span>
+<span class="fc" id="L29">        return tokens.stream()</span>
+<span class="fc" id="L30">                .map(token -&gt; token.word)</span>
+<span class="fc" id="L31">                .collect(Collectors.toList());</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

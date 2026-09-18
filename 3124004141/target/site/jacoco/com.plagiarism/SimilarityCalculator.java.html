@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SimilarityCalculator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">plagiarism-checker</a> &gt; <a href="index.source.html" class="el_package">com.plagiarism</a> &gt; <span class="el_source">SimilarityCalculator.java</span></div><h1>SimilarityCalculator.java</h1><pre class="source lang-java linenums">package com.plagiarism;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+/**
+ * 相似度计算工具类
+ * 基于词袋模型和余弦相似度计算文本重复率
+ */
+<span class="nc" id="L13">public class SimilarityCalculator {</span>
+
+    /**
+     * 计算两个分词列表的余弦相似度
+     * @param words1 原文分词结果
+     * @param words2 抄袭版分词结果
+     * @return 相似度值，范围 0.0 ~ 1.0
+     */
+    public static double cosineSimilarity(List&lt;String&gt; words1, List&lt;String&gt; words2) {
+<span class="fc" id="L22">        Map&lt;String, Integer&gt; freq1 = getWordFrequency(words1);</span>
+<span class="fc" id="L23">        Map&lt;String, Integer&gt; freq2 = getWordFrequency(words2);</span>
+<span class="fc" id="L24">        return calculateCosine(freq1, freq2);</span>
+    }
+
+    /**
+     * 统计词频，生成词-频率映射
+     */
+    private static Map&lt;String, Integer&gt; getWordFrequency(List&lt;String&gt; words) {
+<span class="fc" id="L31">        Map&lt;String, Integer&gt; freqMap = new HashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L32" title="All 2 branches covered.">        for (String word : words) {</span>
+<span class="fc" id="L33">            freqMap.put(word, freqMap.getOrDefault(word, 0) + 1);</span>
+<span class="fc" id="L34">        }</span>
+<span class="fc" id="L35">        return freqMap;</span>
+    }
+
+    /**
+     * 计算两个词频向量的余弦值
+     */
+    private static double calculateCosine(Map&lt;String, Integer&gt; freq1, Map&lt;String, Integer&gt; freq2) {
+        // 获取所有词的并集
+<span class="fc" id="L43">        Set&lt;String&gt; allWords = new HashSet&lt;&gt;(freq1.keySet());</span>
+<span class="fc" id="L44">        allWords.addAll(freq2.keySet());</span>
+
+        // 计算点积
+<span class="fc" id="L47">        double dotProduct = 0.0;</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">        for (String word : allWords) {</span>
+<span class="fc" id="L49">            dotProduct += freq1.getOrDefault(word, 0) * freq2.getOrDefault(word, 0);</span>
+<span class="fc" id="L50">        }</span>
+
+        // 计算两个向量的模长
+<span class="fc" id="L53">        double norm1 = calculateNorm(freq1);</span>
+<span class="fc" id="L54">        double norm2 = calculateNorm(freq2);</span>
+
+        // 避免除零异常
+<span class="pc bpc" id="L57" title="1 of 4 branches missed.">        if (norm1 == 0 || norm2 == 0) {</span>
+<span class="fc" id="L58">            return 0.0;</span>
+        }
+
+<span class="fc" id="L61">        return dotProduct / (norm1 * norm2);</span>
+    }
+
+    /**
+     * 计算向量的模长（平方和开根号）
+     */
+    private static double calculateNorm(Map&lt;String, Integer&gt; freqMap) {
+<span class="fc" id="L68">        double sum = 0.0;</span>
+<span class="fc bfc" id="L69" title="All 2 branches covered.">        for (int count : freqMap.values()) {</span>
+<span class="fc" id="L70">            sum += Math.pow(count, 2);</span>
+<span class="fc" id="L71">        }</span>
+<span class="fc" id="L72">        return Math.sqrt(sum);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

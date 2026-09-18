@@ -1,0 +1,4 @@
+com\plagiarism\Main.class
+com\plagiarism\SimilarityCalculator.class
+com\plagiarism\TextPreprocessor.class
+com\plagiarism\WordSegmenter.class
