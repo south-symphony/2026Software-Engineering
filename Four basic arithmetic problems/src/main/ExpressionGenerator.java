@@ -87,35 +87,48 @@ public class ExpressionGenerator {
                 throw new IllegalStateException("未知运算符");
         }
 
-        String expr = left.expression + " " + op + " " + right.expression;
+        // 【修复】去掉 remainingOps < maxOps 的错误限制，严格按优先级判断是否加括号
+        String leftExpr = left.expression;
+        String rightExpr = right.expression;
 
-        // 按优先级决定是否加括号
-        if (remainingOps < maxOps && needParentheses(op, left.op, true)) {
-            expr = "(" + left.expression + ")" + " " + op + " " + right.expression;
+        if (needParentheses(op, left.op, true)) {
+            leftExpr = "(" + left.expression + ")";
         }
-        if (remainingOps < maxOps && needParentheses(op, right.op, false)) {
-            expr = left.expression + " " + op + " " + "(" + right.expression + ")";
+        if (needParentheses(op, right.op, false)) {
+            rightExpr = "(" + right.expression + ")";
         }
 
+        String expr = leftExpr + " " + op + " " + rightExpr;
         return new ExprNode(expr, result, op);
     }
 
-    // 判断是否需要加括号
+    /**
+     * 判断子表达式是否需要加括号
+     * @param outerOp 外层运算符
+     * @param innerOp 内层（子表达式）运算符
+     * @param isLeft 是否是左子表达式
+     */
     private boolean needParentheses(char outerOp, char innerOp, boolean isLeft) {
-        if (innerOp == ' ') return false; // 操作数不需要括号
+        // 操作数（没有运算符）不需要括号
+        if (innerOp == ' ') return false;
 
         int outerPriority = getPriority(outerOp);
         int innerPriority = getPriority(innerOp);
 
+        // 内层优先级更低，必须加括号
         if (innerPriority < outerPriority) {
             return true;
         }
+
+        // 优先级相等的情况（左结合运算符）
         if (innerPriority == outerPriority) {
-            // 同优先级：减法和除法右结合需要括号
+            // 减法和除法：右边的子式必须加括号（左结合，右结合会改变结果）
+            // 加法和乘法：满足结合律，左右都不用加括号
             if (!isLeft && (outerOp == '-' || outerOp == '÷')) {
                 return true;
             }
         }
+
         return false;
     }
 
